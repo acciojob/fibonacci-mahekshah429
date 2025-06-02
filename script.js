@@ -12,8 +12,8 @@ function fibonacci(num) {
 }
 
 function findFibonacci() {
-  const input = document.getElementById('fibInput').value;
-  const n = parseInt(input);
+  const input = document.getElementById('fibInput').value.trim();
+  const n = parseInt(input, 10);
 
   const resultElement = document.getElementById('result');
 
