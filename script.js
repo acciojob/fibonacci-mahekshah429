@@ -1,26 +1,29 @@
-function fibonacci(num) {
-  if (num === 1) return 0;
-  if (num === 2) return 1;
+document.getElementById("calculateBtn").addEventListener("click", async function () {
+  const n = document.getElementById("fibInput").value;
+  const resultBox = document.getElementById("result");
 
-  let a = 0, b = 1, c;
-  for (let i = 3; i <= num; i++) {
-    c = a + b;
-    a = b;
-    b = c;
+  if (n === '' || isNaN(n) || n < 0) {
+    resultBox.innerText = "Please enter a valid non-negative number.";
+    return;
   }
-  return b;
-}
 
-function findFibonacci() {
-  const input = document.getElementById('fibInput').value.trim();
-  const n = parseInt(input, 10);
+  try {
+    const response = await fetch("http://localhost:3000/fibnocci", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ n: parseInt(n) })
+    });
 
-  const resultElement = document.getElementById('result');
+    const data = await response.json();
 
-  if (isNaN(n) || n < 1 || n > 50) {
-    resultElement.textContent = "Please enter a number between 1 and 50.";
-  } else {
-    const fibNumber = fibonacci(n);
-    resultElement.textContent = `Result: ${fibNumber}`;
+    if (response.ok) {
+      resultBox.innerText = `Fibonacci of ${n} is: ${data.message}`;
+    } else {
+      resultBox.innerText = `Error: ${data.message || 'Something went wrong'}`;
+    }
+  } catch (error) {
+    resultBox.innerText = "Failed to connect to the server.";
   }
-}
+});
